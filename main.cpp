@@ -68,6 +68,7 @@ public:
 
     void set_data()
     {
+    	clear_screen();
     	cout << "\n" << "Student" << endl;
     	cout.width(18); cout << "Surname: "; cin >> record.surname;
     	cout.width(18); cout << "Name: "; cin >> record.name;
@@ -88,6 +89,7 @@ public:
 
     void get_data()
     {
+    	clear_screen();
     	cout << "\n" << "Student " << endl;
     	cout.width(24); cout << "Surname : " << record.surname << endl;
     	cout.width(24); cout << "Name : " << record.name << endl;
@@ -110,7 +112,8 @@ public:
     {
     	unsigned int choice, x;
 
-    	cout << "\n" << "What student you want to change?" << endl;
+		clear_screen();
+    	cout << "\n" << "What data you want to change?" << endl;
     	cout << "1 - Data" << endl;
     	cout << "2 - Activity" << endl;
     	cout << "Choice: "; cin >> choice;
@@ -179,6 +182,14 @@ public:
 
     		cout << "\n" << "New subject_and_mark" << x << ": "; cin >> record.activity.subject[x].value; cin >> record.activity.mark[x].value;
     	}
+   	}
+
+   	void delete_data()
+   	{
+   		int choice;
+   		clear_screen();
+   		cout << "\n" << "What student you want to delete?" << endl;
+   		cout << "Choice: "; cin >> choice;
    	}
 };
 
