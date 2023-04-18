@@ -112,7 +112,7 @@ public:
     {
     	unsigned int choice, x;
 
-		clear_screen();
+	clear_screen();
     	cout << "\n" << "What data you want to change?" << endl;
     	cout << "1 - Data" << endl;
     	cout << "2 - Activity" << endl;
@@ -158,8 +158,8 @@ public:
     			cout << "\n" << "New yearOfAdmission: "; cin >> record.yearOfAdmission;
     			break;
     		case 8:	
-				cout << "\n" << "New faculty "; cin >> record.faculty;
-				break;
+			cout << "\n" << "New faculty "; cin >> record.faculty;
+			break;
     		case 9:
     			cout << "\n" << "New department: "; cin >> record.department;
     			break;
