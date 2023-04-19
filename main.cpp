@@ -131,7 +131,7 @@ public:
 
 int main() {
 	Students students;
-    students.set_data();
+	students.set_data();
 	students.display_data();
 	return 0;
 }
