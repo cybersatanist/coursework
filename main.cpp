@@ -118,19 +118,19 @@ int main() {
     ifstream file;
     file.seekg(0, ios::beg);
     file.open("Database.bin", ios::binary);
-        while (!file.eof()) {
-            Students* student = new Students();
+    while (!file.eof()) {
+    	Students* student = new Students();
             
-            while (file.read(reinterpret_cast<char*>(student), sizeof(Students))) {
-                student->display_data();
-                delete student;
-                file.seekg(sizeof(Data), ios::cur);
+        while (file.read(reinterpret_cast<char*>(student), sizeof(Students))) {
+            student->display_data();
+            delete student;
+            file.seekg(sizeof(Data), ios::cur);
 
-                if (!file.read(reinterpret_cast<char*>(student), sizeof(Students))) {
-                    break;
-                }
+            if (!file.read(reinterpret_cast<char*>(student), sizeof(Students))) {
+                break;
             }
         }
+    }
     file.close();
 	return 0;
 }
