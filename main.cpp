@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <cstring>
 
 using namespace std;
 
@@ -85,13 +86,6 @@ public:
                 cout << "Subject and mark" << k + 1 << ": "; cin >> data.term[i].subject[k].value; cin >> data.term[i].mark[k].value;
             }
         }
-        ofstream file;
-        file.open("Database.bin", ios::app | ios::binary);
-        if (file.is_open()) 
-        {
-            file.write((char*)&data, sizeof(Data));
-            file.close();
-        }
     }
 
     void display_data()
@@ -121,8 +115,9 @@ public:
 int main() {
 
     struct Data data;
+    int choice, choice2;
+    char number[21];
     char x;
-    int choice;
 
     while (true) {
         draw_main_menu();
@@ -131,30 +126,37 @@ int main() {
         switch(choice)
         {
         
-            case 1: // Ввод данных с клавиатуры -> запись в объект -> вывод объекта в бинарный файл -> выход из пункта меню
+            case 1: // Ввод данных с клавиатуры -> запись в объект -> запись объекта в бинарный файл
             {
-                Students* student = new Students();
-                student->set_data();
-                delete student;
+                Students student;
+                student.set_data();
+
+                ofstream file;
+                file.open("Database.bin", ios::app | ios::binary);
+                if (file.is_open()) 
+                {
+                    file.write((char*)&student, sizeof(Data));
+                    file.close();
+                }
     
                 cout << "Student successfully added!" << endl;
                 cout << "Enter <x> to exit program: "; cin >> x;
-
             } break;
         
-            case 2: // Чтение структуры в файле (цикл) -> запись в объект (цикл) -> вывод на экран (цикл) -> выход из пункта меню
+            case 2: // Чтение структуры в файле (начало цикла) -> запись прочитанной структуры в динамический объект (цикл) -> вывод на экран (конец цикла)
             {
                 ifstream file;
                 file.open("Database.bin", ios::binary);
                 while (true) {
                     Students* student = new Students();
                     file.read(reinterpret_cast<char*>(student), sizeof(Data));
-                    if (file.eof()) {
+                    if (file.eof()) 
+                    {
+                        delete student;
+                        break;
+                    }
+                    student->display_data();
                     delete student;
-                    break;
-                }
-                student->display_data();
-                delete student;
                 }
                 file.close();
     
@@ -162,14 +164,39 @@ int main() {
                 cout << "Enter <x> to exit: "; cin >> x;
             } break;
         
-            case 3: // Запись данных из файла в динамические объекты, выбор определённого объекта, его удаление
-            {
-                cout << "NONE" << endl;
+            case 3:
+            {      
+                cout << "NONE";
             } break;
             
-            case 4:
-            {
-                cout << "NONE" << endl;
+            case 4: // Чтение структуры в файле (начало цикла) -> сравнение с номером зачётки (number), введенным пользователем (цикл) ->
+            {       // -> копирование структуры в файл temp, кроме структуры удаляемого студента (цикл) -> изменение имени файла temp.bin на database.bin (конец цикла)
+                cout << "Enter gradebook number of student to delete: "; cin >> number;
+
+                ifstream database;
+                database.open("Database.bin", ios::binary);
+
+                ofstream temp;
+                temp.open("Temp.bin", ios::binary);
+
+                if (database.is_open() && temp.is_open()) 
+                {
+                    while (database.read((char*)&data, sizeof(Data))) 
+                    {
+                        if (strcmp(data.gradebookNumb, number) != 0) 
+                        {
+                            temp.write((char*)&data, sizeof(Data));
+                        }
+                    }
+                database.close();
+                temp.close();
+                remove("Database.bin");
+                rename("Temp.bin", "Database.bin");
+                }   
+
+                draw_line();
+                cout << "Student is deleted successfully!" << endl;
+                cout << "Enter <x> to exit: "; cin >> x;
             } break;
             
             default:
