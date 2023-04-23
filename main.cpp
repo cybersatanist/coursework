@@ -18,6 +18,18 @@ void draw_line()
     cout << endl;
 }
 
+void draw_main_menu() 
+{
+    clear_screen();
+    cout.width(15); cout << "Main menu" << endl;
+    cout << "1 - Add student" << endl;
+    cout << "2 - Display students" << endl;
+    cout << "3 - Edit student" << endl;
+    cout << "4 - Delete student" << endl;
+    cout << "0 - Exit program" << endl;
+    cout << "Choice: ";
+}
+
 struct Subject
 {
     char value[21];
@@ -73,7 +85,6 @@ public:
                 cout << "Subject and mark" << k + 1 << ": "; cin >> data.term[i].subject[k].value; cin >> data.term[i].mark[k].value;
             }
         }
-
         ofstream file;
         file.open("Database.bin", ios::app | ios::binary);
         if (file.is_open()) 
@@ -108,29 +119,66 @@ public:
 };
 
 int main() {
+
     struct Data data;
-    // Запись объекта в файл и удаление объекта
-    Students* student = new Students();
-    student->set_data();
-    delete student;
+    char x;
+    int choice;
 
-    // Запись данных из файла в объект, вывод на экран, удаление объекта
-    ifstream file;
-    file.seekg(0, ios::beg);
-    file.open("Database.bin", ios::binary);
-    while (!file.eof()) {
-    	Students* student = new Students();
+    while (true) {
+        draw_main_menu();
+        cin >> choice;
+    
+        switch(choice)
+        {
+        
+            case 1: // Ввод данных с клавиатуры -> запись в объект -> вывод объекта в бинарный файл -> выход из пункта меню
+            {
+                Students* student = new Students();
+                student->set_data();
+                delete student;
+    
+                cout << "Student successfully added!" << endl;
+                cout << "Enter <x> to exit program: "; cin >> x;
+
+            } break;
+        
+            case 2: // Чтение структуры в файле (цикл) -> запись в объект (цикл) -> вывод на экран (цикл) -> выход из пункта меню
+            {
+                ifstream file;
+                file.open("Database.bin", ios::binary);
+                while (true) {
+                    Students* student = new Students();
+                    file.read(reinterpret_cast<char*>(student), sizeof(Data));
+                    if (file.eof()) {
+                    delete student;
+                    break;
+                }
+                student->display_data();
+                delete student;
+                }
+                file.close();
+    
+                cout << "Students are displayed successfully!" << endl;
+                cout << "Enter <x> to exit: "; cin >> x;
+            } break;
+        
+            case 3: // Запись данных из файла в динамические объекты, выбор определённого объекта, его удаление
+            {
+                cout << "NONE" << endl;
+            } break;
             
-        while (file.read(reinterpret_cast<char*>(student), sizeof(Students))) {
-            student->display_data();
-            delete student;
-            file.seekg(sizeof(Data), ios::cur);
-
-            if (!file.read(reinterpret_cast<char*>(student), sizeof(Students))) {
-                break;
-            }
+            case 4:
+            {
+                cout << "NONE" << endl;
+            } break;
+            
+            default:
+            {
+                clear_screen();
+                cout << "**EXIT**" << endl;
+                return 0;
+            } break;
+        
         }
     }
-    file.close();
-	return 0;
 }
