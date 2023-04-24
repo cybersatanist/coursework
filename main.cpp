@@ -118,7 +118,6 @@ int main()
     // Переменные, указатели
     unsigned int mainMenuChoice;
     char end;
-    unsigned int numberOfStudents = 0;
     char number[21];
     struct Data data;
 
@@ -144,11 +143,9 @@ m1: clear_screen();
 
             ofstream database;
             database.open("Database.bin", ios::app | ios::binary);
-            if (database.is_open()) {
-                database.write((char*)&student, sizeof(Data));
-                database.close();
-            }
-    
+            database.write((char*)&student, sizeof(Data));
+            database.close();
+
             cout << "\n" << "Student successfully added!" << endl;
             cout << "Enter <x> to exit: "; cin >> end;
             goto m1;
@@ -173,7 +170,7 @@ m1: clear_screen();
         case 3:                 // Изменение данных студента
         {
             cout << "Enter gradebook number of student to edit: "; cin >> number;
-            
+
 
             cout << "Student is edited successfully!" << endl;
             cout << "\n" << "Enter <x> to exit: "; cin >> end;
