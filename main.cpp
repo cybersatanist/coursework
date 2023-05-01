@@ -1,3 +1,6 @@
+// Student Database Control Panel
+// Version 1.0
+
 #include <iostream>
 #include <fstream>
 #include <cstring>
@@ -6,14 +9,14 @@ using namespace std;
 
 // Оформление
 
-void clear_screen()
+void clearScreen()
 {
     for (int i = 0; i < 10; i++) {
         cout << "\n\n\n\n\n\n\n\n\n\n";
     }
 }
 
-void draw_line()
+void drawLine()
 {
     for (int i = 0; i <= 30; i++) {
         cout << "-";
@@ -21,16 +24,33 @@ void draw_line()
     cout << endl;
 }
 
-void draw_main_menu()
+void drawMainMenu()
 {
     cout.width(20); cout << "Main menu" << endl;
-    draw_line();
+    drawLine();
     cout << "1 - Add student" << endl;
     cout << "2 - Display students" << endl;
     cout << "3 - Edit student" << endl;
     cout << "4 - Delete student" << "\n" << endl;
     cout << "0 - Exit program" << endl;
-    draw_line();
+    drawLine();
+    cout << "Choice: ";
+}
+
+void drawChangesMenu()
+{
+    drawLine();
+    cout << "What data do you want to change?" << endl;
+    drawLine();
+    cout << "1 - Surname, name, patronymic" << endl;
+    cout << "2 - Date, month, year of birthday (DD MM YY)" << endl;
+    cout << "3 - YearOfAdmission" << endl;
+    cout << "4 - Faculty" << endl;
+    cout << "5 - Department" << endl;
+    cout << "6 - GradebookNumb" << endl;
+    cout << "7 - Group" << endl;
+    cout << "8 - Gender" << endl;
+    drawLine();
     cout << "Choice: ";
 }
 
@@ -38,7 +58,7 @@ void draw_main_menu()
 
 struct Subject
 {
-    char value[21];
+    char value[31];
 };
 
 struct Mark
@@ -57,11 +77,11 @@ struct Data
     char surname[21], name[21], patronymic[21];
     unsigned short date, month, year;
     unsigned short yearOfAdmission;
-    char faculty[21];
-    char department[21];
-    char group[21];
-    char gradebookNumb[21];
-    char gender[21];
+    char faculty[31];
+    char department[31];
+    char group[16];
+    char gradebookNumb[16];
+    char gender[2];
     struct Term term[9];
 };
 
@@ -72,7 +92,7 @@ public:
     Students() {}
     ~Students() {}
 
-    void input_data()       // Ввод данных в объект с клавиатуры 
+    void inputData()       // Ввод данных с клавиатуры 
     {
         cout << "\n" << "Student data" << "\n" << endl;
         cout << "Surname, name, patronymic: "; cin >> data.surname >> data.name >> data.patronymic;
@@ -92,7 +112,7 @@ public:
         }
     }
 
-    void display_data()     // Вывод данных из объекта на экран
+    void displayData()     // Вывод данных на экран
     {
         cout.width(18); cout << "Surname : " << data.surname << endl;
         cout.width(18); cout << "Name : " << data.name << endl;
@@ -111,19 +131,78 @@ public:
             }
         }
     }
+
+    void setData(unsigned int changesMenuChoice)     // Изменение определённых данных
+    {
+        switch(changesMenuChoice)
+        {
+            case 1:
+            {
+                cout << "Surname, name, patronymic: ";
+                cin >> data.surname >> data.name >> data.patronymic;
+            } break;
+
+            case 2:
+            {
+                cout << "Date, moth, year: ";
+                cin >> data.date >> data.month >> data.year;
+            } break;
+
+            case 3:
+            {
+                cout << "YearOfAdmission: ";
+                cin >> data.yearOfAdmission;
+            } break;
+
+            case 4:
+            {
+                cout << "Faculty: ";
+                cin >> data.faculty;
+            } break;
+
+            case 5:
+            {
+                cout << "Department: ";
+                cin >> data.department;
+            } break;
+
+            case 6:
+            {
+                cout << "GradebookNumb: ";
+                cin >> data.gradebookNumb;
+            } break;
+
+            case 7:
+            {
+                cout << "Group: ";
+                cin >> data.group;
+            } break;
+
+            case 8:
+            {
+                cout << "Gender: ";
+                cin >> data.gender;
+            } break;
+        }
+    }
+
+    Data getData() const {
+        return data;
+    }     // Возвращает объект типа 'Data'
 };
 
 int main()
 {   
     // Переменные, указатели
     unsigned int mainMenuChoice;
-    char end;
+    unsigned int changesMenuChoice;
+    char x;
     char number[21];
     struct Data data;
 
     // Главное меню
-m1: clear_screen();
-    draw_main_menu();
+m1: clearScreen();
+    drawMainMenu();
     cin >> mainMenuChoice;
 
     // Выбор действия
@@ -131,55 +210,76 @@ m1: clear_screen();
     {
         case 0:                 // Выход из программы
         {
-            clear_screen();
+            clearScreen();
             cout << "**EXIT**" << endl;
             return 0;
         } break;
 
         case 1:                 // Добавление студента в базу данных
         {
-            Students student;
-            student.input_data();
+            Students* student = new Students();
+            student->inputData();
 
             ofstream database;
             database.open("Database.bin", ios::app | ios::binary);
-            database.write((char*)&student, sizeof(Data));
+            database.write((char*)student, sizeof(Data));
             database.close();
 
             cout << "\n" << "Student successfully added!" << endl;
-            cout << "Enter <x> to exit: "; cin >> end;
+            cout << "Enter <x> to exit: "; cin >> x;
+            delete student;
             goto m1;
         } break;
 
         case 2:                 // Отображение всех студентов из базы данных
         {
-            Students student;
+            Students* student = new Students();
 
             ifstream database;
             database.open("Database.bin", ios::binary);
-            while (database.read(reinterpret_cast<char*>(&student), sizeof(Data))) {
-                draw_line();
-                student.display_data();
+            while (database.read(reinterpret_cast<char*>(student), sizeof(Data))) {
+                drawLine();
+                student->displayData();
             }
+            delete student;
             database.close();
 
-            cout << "\n" << "Enter <x> to exit: "; cin >> end;
+            cout << "\n" << "Enter <x> to exit: "; cin >> x;
             goto m1;
         } break;
 
         case 3:                 // Изменение данных студента
         {
+            drawLine();
             cout << "Enter gradebook number of student to edit: "; cin >> number;
 
+            Students* student = new Students();
 
-            cout << "Student is edited successfully!" << endl;
-            cout << "\n" << "Enter <x> to exit: "; cin >> end;
+            fstream database;
+            database.open("Database.bin", ios::in | ios::out | ios::binary);
+            while (database.read(reinterpret_cast<char*>(student), sizeof(Data))) {
+                if (strcmp(student->getData().gradebookNumb, number) == 0) {
+                    student->displayData();
+                    drawChangesMenu();
+                    cin >> changesMenuChoice;
+
+                    student->setData(changesMenuChoice);
+
+                    database.seekp(-static_cast<int>(sizeof(Data)), ios::cur);
+                    database.write(reinterpret_cast<char*>(student), sizeof(Data));
+                    break;
+                }
+            }
+            database.close();
+            delete student;
+            cout << "\n" << "Student is edited successfully!" << endl;
+            cout << "Enter <x> to exit: "; cin >> x;
             goto m1;
         } break;
 
         case 4:                 // Удаление студента из базы данных
         {
-            draw_line();
+            drawLine();
             cout << "Enter gradebook number of student to delete: "; cin >> number;
 
             ifstream database;
@@ -198,7 +298,7 @@ m1: clear_screen();
             rename("Temp.bin", "Database.bin");
 
             cout << "Student is deleted successfully!" << endl;
-            cout << "\n" << "Enter <x> to exit: "; cin >> end;
+            cout << "\n" << "Enter <x> to exit: "; cin >> x;
             goto m1;
         } break;
     }
