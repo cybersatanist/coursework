@@ -297,8 +297,8 @@ m1: clearScreen();
             remove("Database.bin");
             rename("Temp.bin", "Database.bin");
 
-            cout << "Student is deleted successfully!" << endl;
-            cout << "\n" << "Enter <x> to exit: "; cin >> x;
+            cout << "\n" << "Student is deleted successfully!" << endl;
+            cout << "Enter <x> to exit: "; cin >> x;
             goto m1;
         } break;
     }
