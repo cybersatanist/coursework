@@ -43,7 +43,7 @@ void drawChangesMenu()
     cout << "What data do you want to change?" << endl;
     drawLine();
     cout << "1 - Surname, name, patronymic" << endl;
-    cout << "2 - Date, month, year of birthday (DD MM YY)" << endl;
+    cout << "2 - Date, month, year of birthday" << endl;
     cout << "3 - YearOfAdmission" << endl;
     cout << "4 - Faculty" << endl;
     cout << "5 - Department" << endl;
@@ -58,7 +58,7 @@ void drawChangesMenu()
 
 struct Subject
 {
-    char value[31];
+    char value[16];
 };
 
 struct Mark
@@ -94,9 +94,9 @@ public:
 
     void inputData()       // Ввод данных с клавиатуры 
     {
-        cout << "\n" << "Student data" << "\n" << endl;
+        cout << "\n" << "Student data" << endl;
         cout << "Surname, name, patronymic: "; cin >> data.surname >> data.name >> data.patronymic;
-        cout << "Date, month, year of birthday (D M Y): "; cin >> data.date; cin >> data.month; cin >> data.year;
+        cout << "Date, month, year of birthday: "; cin >> data.date; cin >> data.month; cin >> data.year;
         cout << "YearOfAdmission: "; cin >> data.yearOfAdmission;
         cout << "Faculty: "; cin >> data.faculty;
         cout << "Department: "; cin >> data.department;
@@ -134,6 +134,7 @@ public:
 
     void setData(unsigned int changesMenuChoice)     // Изменение определённых данных
     {
+        drawLine();
         switch(changesMenuChoice)
         {
             case 1:
@@ -197,7 +198,7 @@ int main()
     unsigned int mainMenuChoice;
     unsigned int changesMenuChoice;
     char x;
-    char number[21];
+    char number[16];
     struct Data data;
 
     // Главное меню
