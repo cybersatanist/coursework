@@ -231,7 +231,7 @@ m1: clearScreen();
             goto m1;
         } break;
 
-        case 2:                 // Отображение всех студентов из базы данных
+        case 2:                 // Отображение всех студентов в базе данных
         {
             Students* student = new Students();
 
