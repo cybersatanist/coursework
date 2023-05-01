@@ -96,7 +96,7 @@ public:
     {
         cout << "\n" << "Student data" << "\n" << endl;
         cout << "Surname, name, patronymic: "; cin >> data.surname >> data.name >> data.patronymic;
-        cout << "Date, month, year of birthday (DD MM YY): "; cin >> data.date; cin >> data.month; cin >> data.year;
+        cout << "Date, month, year of birthday (D M Y): "; cin >> data.date; cin >> data.month; cin >> data.year;
         cout << "YearOfAdmission: "; cin >> data.yearOfAdmission;
         cout << "Faculty: "; cin >> data.faculty;
         cout << "Department: "; cin >> data.department;
