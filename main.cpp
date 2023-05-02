@@ -1,5 +1,5 @@
 // Student Database Control Panel
-// Version 1.0
+// Version 2.0
 
 #include <iostream>
 #include <fstream>
@@ -31,7 +31,8 @@ void drawMainMenu()
     cout << "1 - Add student" << endl;
     cout << "2 - Display students" << endl;
     cout << "3 - Edit student" << endl;
-    cout << "4 - Delete student" << "\n" << endl;
+    cout << "4 - Delete student" << endl;
+    cout << "5 - Complete the task" << "\n" << endl;
     cout << "0 - Exit program" << endl;
     drawLine();
     cout << "Choice: ";
@@ -189,17 +190,14 @@ public:
 
     Data getData() const {
         return data;
-    }     // Возвращает объект типа 'Data'
+    }       // Возвращает объект типа 'Data'
 };
 
 int main()
 {   
-    // Переменные, указатели
-    unsigned int mainMenuChoice;
-    unsigned int changesMenuChoice;
-    char x;
-    char number[16];
     struct Data data;
+    unsigned int mainMenuChoice;
+    char x;                      // Для выхода из функции
 
     // Главное меню
 m1: clearScreen();
@@ -251,6 +249,9 @@ m1: clearScreen();
 
         case 3:                 // Изменение данных студента
         {
+            char number[16];
+            unsigned int changesMenuChoice;
+
             drawLine();
             cout << "Enter gradebook number of student to edit: "; cin >> number;
 
@@ -272,14 +273,17 @@ m1: clearScreen();
                 }
             }
             database.close();
-            delete student;
+
             cout << "\n" << "Student is edited successfully!" << endl;
             cout << "Enter <x> to exit: "; cin >> x;
+            delete student;
             goto m1;
         } break;
 
         case 4:                 // Удаление студента из базы данных
         {
+            char number[16];
+
             drawLine();
             cout << "Enter gradebook number of student to delete: "; cin >> number;
 
@@ -300,6 +304,80 @@ m1: clearScreen();
 
             cout << "\n" << "Student is deleted successfully!" << endl;
             cout << "Enter <x> to exit: "; cin >> x;
+            goto m1;
+        } break;
+
+        case 5:                 // Определение и отображение лучшего и худшего студента
+        {
+            unsigned int minYear, maxYear;
+            unsigned int minSession, maxSession;
+            float maxAverage = -10000; float minAverage = 10000; float valAverage = 0;
+            int counter = 0;
+            char bestStudent[16]; char worstStudent[16];           // Номер зачетной книжки лучшег и худшего студента
+
+            drawLine();
+
+            cout << "Enter birth year range (min max): ";
+            cin >> minYear; cin >> maxYear;
+
+            cout << "Enter session range (min max): ";
+            cin >> minSession; cin >> maxSession;
+
+            drawLine();
+
+            ifstream database;                                     // Поиск минимального и максимального среднего значения оценки
+            database.open("Database.bin", ios::binary);
+            while (database.read((char*)&data, sizeof(Data))) {
+                counter = 0;
+                valAverage = 0;
+                for (int i = minSession - 1; i < maxSession; i++) {
+                    for (int k = 0; k < 10; k++) {
+                        if (data.year >= minYear && data.year <= maxYear) {
+                            valAverage += data.term[i].mark[k].value;
+                            counter += 1;
+                        }
+                    }
+                }
+                valAverage = valAverage / counter;
+
+                if (valAverage > maxAverage) {
+                    maxAverage = valAverage;
+                    strcpy(bestStudent, data.gradebookNumb);
+
+                }
+                if (valAverage < minAverage) {
+                    minAverage = valAverage;
+                    strcpy(worstStudent, data.gradebookNumb);
+                }
+            }
+            database.close();
+
+            Students* student = new Students();
+
+            database.open("Database.bin", ios::binary);                                     // Отображение лучшего студента
+            while (database.read(reinterpret_cast<char*>(student), sizeof(Data))) {
+                if (strcmp(student->getData().gradebookNumb, bestStudent) == 0) {
+                    student->displayData();
+                    drawLine();
+                    cout.precision(2); cout << "Maximal average: " << fixed << maxAverage << endl;
+                }
+            }
+            database.close();
+
+            drawLine();
+
+            database.open("Database.bin", ios::binary);                                     // Отображение худшего студента
+            while (database.read(reinterpret_cast<char*>(student), sizeof(Data))) {
+                if (strcmp(student->getData().gradebookNumb, worstStudent) == 0) {
+                    student->displayData();
+                    drawLine();
+                    cout.precision(2); cout << "Minimal average: " << fixed << minAverage << endl;
+                }
+            }
+            database.close();
+
+            cout << "\n" << "Enter <x> to exit: "; cin >> x;
+            delete student;
             goto m1;
         } break;
     }
