@@ -1,5 +1,5 @@
-// Student Database Control Panel
-// Version 2.0
+//      Student Database Control Panel
+//              Version 2.0
 
 #include <iostream>
 #include <fstream>
