@@ -1,14 +1,16 @@
 //      Student Database Control Panel
-//              Version 3.5
+//              Version 4.0
 
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <cctype>
+#include <limits>
 
 using namespace std;
 
 /*
-*   Оформление
+*   Функции для оформления
 */
 
 void clearScreen()      // Очистка экрана
@@ -68,7 +70,7 @@ struct Subject
 
 struct Mark
 {
-    unsigned int value = 0;
+    int value = 0;
 };
 
 struct Term
@@ -80,8 +82,8 @@ struct Term
 struct Data
 {
     char surname[21] = "NONE", name[21] = "NONE", patronymic[21] = "NONE";
-    unsigned short date = 0, month = 0, year = 0;
-    unsigned short yearOfAdmission = 0;
+    int date = 0, month = 0, year = 0;
+    int yearOfAdmission = 0;
     char faculty[31] = "NONE";
     char department[31] = "NONE";
     char group[16] = "NONE";
@@ -89,6 +91,50 @@ struct Data
     char gender[2] = "N";
     struct Term term[9];
 };
+
+/*
+*   Функции
+*/
+
+void cinClear()     // Очистка буфера cin
+{
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+}
+
+bool checkInputSNP(string surname, string name, string patronymic)   // Проверка правильности ввода ФИО
+{
+    string full_name = surname + name + patronymic;
+    bool valid = true;
+
+    // Использует переменную "c" для хранения одного символа в строке и проверяет каждый символ
+    for (char c : full_name) { 
+        if (!isalpha(c)) {
+            valid = false;
+            break;
+        } else {
+            valid = true;
+        }
+    }
+
+    // Возвращает значение bool
+    if (valid) {
+        return true;
+    } else {
+        cout << "\nIncorrect input!\n" << endl;
+        return false;
+    }
+}
+
+bool checkInputDMY(int day, int month, int year)    // Проверка правильности ввода даты рождения
+{
+    if (day < 1 || month > 12 || year < 1800) {
+        cout << "\nIncorrect input!\n" << endl;
+        return false;
+    } else {
+        return true;
+    }
+}
 
 /*
 *   Классы
@@ -103,12 +149,30 @@ public:
 
     void inputData()                              // Ввод данных с клавиатуры 
     {
-        unsigned int numberOfTerm;
+        int numberOfTerm;
+        bool flag;
 
-        // Ввод пользовательских данных о студенте
         cout << "***STUDENT DATA***\n" << endl;
-        cout << "Surname, name, patronymic: "; cin >> data.surname >> data.name >> data.patronymic;
-        cout << "Date, month, year of birthday: "; cin >> data.date; cin >> data.month; cin >> data.year;
+
+        // Ввод ФИО и проверка на корректность ввода
+        flag = true;
+        while (true) {
+            cout << "Surname, name, patronymic: "; cin >> data.surname >> data.name >> data.patronymic;
+            if (checkInputSNP(data.surname, data.name, data.patronymic)) {
+                flag = false;
+                break;
+            }
+        }
+
+        // Ввод даты рождения и проверка на корректность ввода
+        flag = true;
+        while (true) {
+            cinClear(); cout << "Date, month, year of birthday: "; cin >> data.date; cin >> data.month; cin >> data.year;
+            if (checkInputDMY(data.date, data.month, data.year)) {
+                flag = false;
+                break;
+            }
+        }
         cout << "YearOfAdmission: "; cin >> data.yearOfAdmission;
         cout << "Faculty: "; cin >> data.faculty;
         cout << "Department: "; cin >> data.department;
@@ -179,26 +243,39 @@ public:
         drawLine();
     }
 
-    void setData(unsigned int changesMenuChoice)  // Изменение определенных данных
+    void setData(int changesMenuChoice)           // Изменение определенных данных
     {
         switch(changesMenuChoice)
         {
             case 1:
             {
-                cout << "Surname, name, patronymic: ";
-                cin >> data.surname >> data.name >> data.patronymic;
-            } break;
-
+                bool flag;
+                flag = true;
+                while (true) {
+                    cout << "Surname, name, patronymic: "; cin >> data.surname >> data.name >> data.patronymic;
+                    if (checkInputSNP(data.surname, data.name, data.patronymic)) {
+                        flag = false;
+                        break;
+                    }
+                }
+            }
             case 2:
             {
-                cout << "Date, moth, year: ";
-                cin >> data.date >> data.month >> data.year;
+                bool flag;
+                flag = true;
+                while (true) {
+                    cinClear(); cout << "Date, month, year of birthday: "; cin >> data.date; cin >> data.month; cin >> data.year;
+                    if (checkInputDMY(data.date, data.month, data.year)) {
+                        flag = false;
+                        break;
+                    }
+                }
             } break;
 
             case 3:
             {
                 cout << "YearOfAdmission: ";
-                cin >> data.yearOfAdmission;
+                 cin >> data.yearOfAdmission;
             } break;
 
             case 4:
@@ -251,7 +328,7 @@ public:
                 clearScreen();
                 cout <<  "***TERM " << termNumber + 1 << "***\n" << endl;
                 for (int k = 0; k < 10; k++) {
-                    cout << "Subject and mark" << k + 1 << ": "; cin >> data.term[termNumber].subject[k].value; cin >> data.term[termNumber].mark[k].value;
+                     cout << "Subject and mark" << k + 1 << ": "; cin >> data.term[termNumber].subject[k].value; cin >> data.term[termNumber].mark[k].value;
                 }
             }
         }
@@ -267,8 +344,8 @@ public:
 int main()
 {   
     struct Data data;
-    unsigned int mainMenuChoice;
-    char x;                      // Для выхода из функции
+    int mainMenuChoice;
+    char x;                      // Переменная для выхода из функции
 
     // Главное меню
     while(true) {
@@ -322,7 +399,7 @@ int main()
 
                     // Ввод значения в переменную termNumber и проверка ввода termNumber
                     while (true) {
-                        cout << "Term number: "; cin >> termNumber;
+                         cout << "Term number: "; cin >> termNumber;
                         clearScreen();
                         if (termNumber > 0 and termNumber < 10) {
                             break;
@@ -374,7 +451,7 @@ int main()
             {clearScreen();
 
                 char number[16];
-                unsigned int changesMenuChoice;
+                int changesMenuChoice;
                 bool flag = false;                  // Булевая переменная для проверки
                 Students* student = new Students();
 
@@ -396,7 +473,7 @@ int main()
 
                             // Открытие меню и выбор изменяемого поля информации
                             drawChangesMenu();
-                            cin >> changesMenuChoice;
+                             cin >> changesMenuChoice;
                             clearScreen();
 
                             // Изменение информации о студенте
@@ -474,8 +551,8 @@ int main()
             case 6:                 // Определение и отображение лучшего и худшего студента
             {clearScreen();
 
-                unsigned int minYear, maxYear;                          // Диапазон года рождения
-                unsigned int minTerm, maxTerm;                          // Диапазон семестров
+                int minYear, maxYear;                                   // Диапазон года рождения
+                int minTerm, maxTerm;                                   // Диапазон семестров
                 float maxAverageMark = 1; float minAverageMark = 6;     // Минимальное и максимальное среднее значение
                 float averageMark = 0;                                  // Среднее значение
                 int counter = 0;
@@ -490,12 +567,12 @@ int main()
 
                     // Ввод диапазона года рождения
                     cout << "Enter birth year range (min max): ";
-                    cin >> minYear; cin >> maxYear;
+                     cin >> minYear; cin >> maxYear;
                     clearScreen();
 
                     // Ввод диапазона семестров
                     cout << "Enter term range (min max): ";
-                    cin >> minTerm; cin >> maxTerm;
+                     cin >> minTerm; cin >> maxTerm;
                     clearScreen();
 
                     // Поиск студента по диапазону года рождения
