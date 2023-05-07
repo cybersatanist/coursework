@@ -173,6 +173,7 @@ public:
                 break;
             }
         }
+
         cout << "YearOfAdmission: "; cin >> data.yearOfAdmission;
         cout << "Faculty: "; cin >> data.faculty;
         cout << "Department: "; cin >> data.department;
@@ -259,6 +260,7 @@ public:
                     }
                 }
             }
+
             case 2:
             {
                 bool flag;
@@ -275,7 +277,7 @@ public:
             case 3:
             {
                 cout << "YearOfAdmission: ";
-                 cin >> data.yearOfAdmission;
+                cin >> data.yearOfAdmission;
             } break;
 
             case 4:
@@ -399,7 +401,7 @@ int main()
 
                     // Ввод значения в переменную termNumber и проверка ввода termNumber
                     while (true) {
-                         cout << "Term number: "; cin >> termNumber;
+                        cout << "Term number: "; cin >> termNumber;
                         clearScreen();
                         if (termNumber > 0 and termNumber < 10) {
                             break;
@@ -443,6 +445,7 @@ int main()
                 } else {
                     cout << "There are no records in the database!\n";
                 }
+
                 cout << "\nEnter something to return to the main menu: "; cin >> x;
                 delete student;
             } break;
@@ -567,12 +570,12 @@ int main()
 
                     // Ввод диапазона года рождения
                     cout << "Enter birth year range (min max): ";
-                     cin >> minYear; cin >> maxYear;
+                    cin >> minYear; cin >> maxYear;
                     clearScreen();
 
                     // Ввод диапазона семестров
                     cout << "Enter term range (min max): ";
-                     cin >> minTerm; cin >> maxTerm;
+                    cin >> minTerm; cin >> maxTerm;
                     clearScreen();
 
                     // Поиск студента по диапазону года рождения
@@ -596,14 +599,14 @@ int main()
 
                             // Запись максимальной средней оценки и запись номера зачетной книжки лучшего студента
                             if (averageMark > maxAverageMark) {
-                            maxAverageMark = averageMark;
-                            strcpy(bestStudent, data.gradebookNumb);
+                                maxAverageMark = averageMark;
+                                strcpy(bestStudent, data.gradebookNumb);
                             }
 
                             // Запись минимальной средней оценки и запись номера зачетной книжки худшего студента
                             if (averageMark < minAverageMark) {
-                            minAverageMark = averageMark;
-                            strcpy(worstStudent, data.gradebookNumb);
+                                minAverageMark = averageMark;
+                                strcpy(worstStudent, data.gradebookNumb);
                             }
                         }
                     }
