@@ -1,5 +1,5 @@
 //      Student Database Control Panel
-//              Version 5.0
+//              Version 4.0
 
 #include <iostream>
 #include <fstream>
@@ -179,13 +179,15 @@ int main()
                 char number[16];
                 bool flag = false;  // Булевая переменная для проверки
 
-                // Открытие базы данных и временного файла
+                // Открытие базы данных
                 ifstream database;
                 database.open("Database.bin", ios::binary);
-                ofstream temp;
-                temp.open("Temp.bin", ios::binary);
 
                 if (database.is_open()) {
+
+                    // Открытие временного файла
+                    ofstream temp;
+                    temp.open("Temp.bin", ios::binary);
 
                     // Ввод номера зачетной книжки искомого студента
                     cout << "Enter gradebook number of student to delete: "; cin >> number;
