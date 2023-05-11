@@ -102,38 +102,27 @@ void cinClear()     // Очистка буфера cin
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
-bool checkInputSNP(string surname, string name, string patronymic)   // Проверка правильности ввода ФИО
+bool checkInput(string surname, string name, string patronymic)   // Проверка правильности ввода ФИО
 {
     string full_name = surname + name + patronymic;
-    bool valid = true;
 
     // Использует переменную "c" для хранения одного символа в строке и проверяет каждый символ
     for (char c : full_name) { 
         if (!isalpha(c)) {
-            valid = false;
-            break;
-        } else {
-            valid = true;
+            cout << "\nIncorrect input!\n" << endl;
+            return false;
         }
     }
-
-    // Возвращает значение bool
-    if (valid) {
-        return true;
-    } else {
-        cout << "\nIncorrect input!\n" << endl;
-        return false;
-    }
+    return true;
 }
 
-bool checkInputDMY(int day, int month, int year)    // Проверка правильности ввода даты рождения
+bool checkInput(int day, int month, int year)    // Проверка правильности ввода даты рождения
 {
     if (day < 1 || month > 12 || year < 1800) {
         cout << "\nIncorrect input!\n" << endl;
         return false;
-    } else {
-        return true;
     }
+    return true;
 }
 
 /*
@@ -147,7 +136,7 @@ public:
     Students() {}
     ~Students() {}
 
-    void inputData()                              // Ввод данных с клавиатуры 
+    void inputData()                       // Ввод данных с клавиатуры 
     {
         int numberOfTerm;
         bool flag;
@@ -158,7 +147,7 @@ public:
         flag = true;
         while (true) {
             cout << "Surname, name, patronymic: "; cin >> data.surname >> data.name >> data.patronymic;
-            if (checkInputSNP(data.surname, data.name, data.patronymic)) {
+            if (checkInput(data.surname, data.name, data.patronymic)) {
                 flag = false;
                 break;
             }
@@ -168,7 +157,7 @@ public:
         flag = true;
         while (true) {
             cinClear(); cout << "Date, month, year of birthday: "; cin >> data.date; cin >> data.month; cin >> data.year;
-            if (checkInputDMY(data.date, data.month, data.year)) {
+            if (checkInput(data.date, data.month, data.year)) {
                 flag = false;
                 break;
             }
@@ -196,7 +185,7 @@ public:
         clearScreen();
     }
 
-    void displayAllData()                         // Вывод всех данных на экран
+    void displayData()                     // Вывод всех данных на экран
     {
         // Вывод данных о студенте на экран
         drawLine();
@@ -221,7 +210,7 @@ public:
         drawLine();
     }
 
-    void displayCertainData(int termNumber)       // Вывод данных на экран с опцией текущего семестра
+    void displayData(int termNumber)       // Вывод данных на экран с опцией текущего семестра
     {
         // Вывод данных о студенте на экран
         drawLine();
@@ -244,7 +233,7 @@ public:
         drawLine();
     }
 
-    void setData(int changesMenuChoice)           // Изменение определенных данных
+    void setData(int changesMenuChoice)    // Изменение определенных данных
     {
         switch(changesMenuChoice)
         {
@@ -254,7 +243,7 @@ public:
                 flag = true;
                 while (true) {
                     cout << "Surname, name, patronymic: "; cin >> data.surname >> data.name >> data.patronymic;
-                    if (checkInputSNP(data.surname, data.name, data.patronymic)) {
+                    if (checkInput(data.surname, data.name, data.patronymic)) {
                         flag = false;
                         break;
                     }
@@ -267,7 +256,7 @@ public:
                 flag = true;
                 while (true) {
                     cinClear(); cout << "Date, month, year of birthday: "; cin >> data.date; cin >> data.month; cin >> data.year;
-                    if (checkInputDMY(data.date, data.month, data.year)) {
+                    if (checkInput(data.date, data.month, data.year)) {
                         flag = false;
                         break;
                     }
@@ -374,7 +363,7 @@ int main()
                 student->inputData();
 
                 // Отображение данных введенных
-                student->displayAllData();
+                student->displayData();
 
                 // Открытие базы данных и запись студента
                 ofstream database;
@@ -413,7 +402,7 @@ int main()
 
                     // Отображение студентов
                     while (database.read(reinterpret_cast<char*>(student), sizeof(Data))) {
-                        student->displayCertainData(termNumber);
+                        student->displayData(termNumber);
                     }
                     database.close();
 
@@ -438,7 +427,7 @@ int main()
 
                     // Отображение студентов
                     while (database.read(reinterpret_cast<char*>(student), sizeof(Data))) {
-                        student->displayAllData();
+                        student->displayData();
                     }
                     database.close();
 
@@ -472,7 +461,7 @@ int main()
 
                         // Поиск студента по номеру зачетной книжки, отображение данных о студенте
                         if (strcmp(student->getData().gradebookNumb, number) == 0) {
-                            student->displayAllData();
+                            student->displayData();
 
                             // Открытие меню и выбор изменяемого поля информации
                             drawChangesMenu();
@@ -620,13 +609,13 @@ int main()
 
                         // Отображение лучшего студента
                         if (strcmp(student->getData().gradebookNumb, bestStudent) == 0) {
-                            student->displayAllData();
+                            student->displayData();
                             cout.precision(2); cout << "Maximal average: " << fixed << maxAverageMark << endl;
                         }
 
                         // Отображение худшего студента
                         if (strcmp(student->getData().gradebookNumb, worstStudent) == 0) {
-                            student->displayAllData();
+                            student->displayData();
                             cout.precision(2); cout << "Minimal average: " << fixed << minAverageMark << endl;
                         }
                     }
