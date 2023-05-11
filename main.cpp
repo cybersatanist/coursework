@@ -91,7 +91,7 @@ int main()
 
                 cout << "\nEnter something to return to the main menu: "; cin >> x;
                 delete student;
-        } break;
+            } break;
 
             case 3:                 // Отображение студентов в базе данных со всеми семестрами
             {clearScreen();
